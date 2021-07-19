@@ -1,6 +1,5 @@
 [Publish]
 path=~\Pictures\win10_lockscreen_extract
-branch=gh-pages
 [Directory]
 src=~\AppData\Local\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets
 [Log]
