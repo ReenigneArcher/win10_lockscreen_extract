@@ -1,4 +1,3 @@
-config
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -88,3 +87,13 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# PyCharm
+.idea/
+venv/
+
+# Config file
+CONFIG.ini
+
+# Log files
+log
