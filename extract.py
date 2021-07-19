@@ -1,10 +1,9 @@
 import configparser
-import git
 import logging
 import numpy as np
 import os
 from PIL import Image
-import scipy.misc as misc
+import skimage.transform
 import shutil
 import util
 
@@ -49,7 +48,7 @@ def extract_files(src_path, extracted_files, logger:logging.Logger):
         if already_extracted(filename, extracted_files, logger):
             continue
 
-        src_file = src_path + filename
+        src_file = os.path.join(src_path, filename)
         # check if it is image or not
         try:
             im = Image.open(src_file)
@@ -72,13 +71,13 @@ def build_differencematrix(src_path, list_land, list_port,
 
     difference_matrix = []
     for land in list_land:
-        im_land = np.array(Image.open(src_path + land))
+        im_land = np.array(Image.open(os.path.join(src_path, land)))
         im_land = im_land[:, (960-304):(960+304), :]
 
         difference_row = []
         for port in list_port:
-            im_port = np.array(Image.open(src_path + port))
-            im_port = misc.imresize(im_port, (1080, 608))
+            im_port = np.array(Image.open(os.path.join(src_path, port)))
+            im_port = skimage.transform.resize(im_port, (1080, 608))
             difference_row += [np.sum((im_land - im_port) ** 2) / (608 * 1080)]
         difference_matrix += [difference_row]
 
@@ -104,14 +103,14 @@ def copy_unique_filepairs(difference_matrix, src_path, list_land, list_port,
         logger.debug('    {0}'.format(list_land[arg_land] + 'XXXX' +
                                       list_port[arg_port] + '.jpg'))
 
-        shutil.copyfile(src_path + list_land[arg_land],
-                        img_path +
+        shutil.copyfile(os.path.join(src_path, list_land[arg_land]),
+                        os.path.join(img_path,
                         list_land[arg_land] + '-land-' +
-                        list_port[arg_port] + '.jpg')
-        shutil.copyfile(src_path + list_port[arg_port],
-                        img_path +
+                        list_port[arg_port] + '.jpg'))
+        shutil.copyfile(os.path.join(src_path, list_port[arg_port]),
+                        os.path.join(img_path,
                         list_land[arg_land] + '-port-' +
-                        list_port[arg_port] + '.jpg')
+                        list_port[arg_port] + '.jpg'))
         cnt += 1
 
         del list_land[arg_land], list_port[arg_port]
@@ -144,8 +143,7 @@ def extract(config: configparser.ConfigParser):
     logger.info('Extracting new files...')
 
     src_path = util.get_conf_srcpath(config)
-    # TODO: need to check branch
-    repo_path, branch = util.get_conf_repoinfo(config)
+
     img_path = util.get_conf_imgpath(config)
     initialize(img_path, logger=logger)
     extracted_files = get_extracted_files(img_path, logger=logger)
@@ -159,6 +157,6 @@ def extract(config: configparser.ConfigParser):
 
 if __name__ == "__main__":
     config = configparser.ConfigParser()
-    config.read('config')
+    config.read('config.ini')
 
     extract(config=config)
