@@ -33,18 +33,9 @@ def get_conf_loglevel(config: configparser.ConfigParser,
     return default
 
 
-def get_conf_repoinfo(config: configparser.ConfigParser):
-    repopath = os.path.expanduser(config.get('Publish', 'path'))
-    return Path(repopath), Path(config.get('Publish', 'branch'))
-
-
 def get_conf_srcpath(config: configparser.ConfigParser):
     return Path(os.path.expanduser(config.get('Directory', 'src')))
 
 
 def get_conf_imgpath(config: configparser.ConfigParser):
     return Path(os.path.expanduser(config.get('Publish', 'path'))) / 'images/'
-
-
-def get_conf_thumbpath(config: configparser.ConfigParser):
-    return Path(os.path.expanduser(config.get('Publish', 'path'))) / 'thumbnails/'
