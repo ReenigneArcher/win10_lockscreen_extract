@@ -50,7 +50,7 @@ def main(config: configparser.ConfigParser):
     initialize(img_path, logger=logger)
 
     url = 'https://clients3.google.com/cast/chromecast/home'
-    r = requests.get(url, stream=True)
+    r = requests.get(url)
 
     for match in re.finditer(r"(ccp-lh\..+?mv)", r.text, re.S):
         #print('------')
